@@ -39,7 +39,7 @@
    
    */
 
-
+/*
 function myFunction(salary, taxCode, incomeTax1, incomeTax2, ownsCar) {
   var totalIncomeTax = incomeTax1 + incomeTax2;
   var studentLoan = (salary - 17775) * 0.09;
@@ -61,12 +61,77 @@ function myFunction(salary, taxCode, incomeTax1, incomeTax2, ownsCar) {
   salary = salary - deductions[2];
 
   return (
-    "Your gross income is £" +
+    "Your gross income is ï¿½" +
     originalSalary.toString() +
-    " and your net income is £" +
+    " and your net income is ï¿½" +
     salary.toString() +
     "."
   );
 }
 
 console.log(myFunction(28000, "1150L", 1000, 580, false));
+*/
+
+
+
+/* la clase cal_tax_credit_salaryNeto tiene como parametros
+   una entrada de salario un codigo de impuesto y un array de de impuestos*/
+class cal_tax_credit_salaryNeto {
+
+   constructor(salary, taxCode, [incomeTax1, incomeTax2]) {
+     this.credit = 17775;
+     this.salary = salary;
+     this.taxCode = taxCode;
+     this.reducer = (accumulator, currentValue)=> accumulator + currentValue;
+     this.irpf = [incomeTax1, incomeTax2].reduce(this.reducer);
+     // taxCode son los tipos de codigos existentes de impuestos
+     this.taxCodeType = {
+      tax_1150L: '1150L',
+      tax_St: 'ST'
+     }
+     // rates son las tasas 
+     this.rates = {
+         rateExtra: 0.1,
+         rateCompleto: 0.05,
+         rateMedio : 0.08,
+         rateBasic : 0.09
+      }
+   }
+   
+   // el metodo studentLoan calcula la deduciones por el credito etudiantil
+   studentLoan() {
+     const {salary, credit, rates} = this
+     return (salary - credit) * rates.rateBasic
+   } 
+
+   // el metodo nationalInsurances calculo el tipo de impuesto, depende del TaxCode y el salary
+   nationalInsurances() {
+     const {salary, taxCode, taxCodeType, nationalInSurance, rates} = this;
+     let national;
+     if(taxCode === taxCodeType.tax_1150L){
+       return national = salary * rates.rateExtra
+     }else if(taxCode === taxCodeType.tax_St) {
+       return national =  salary * rates.rateCompleto
+     }else {
+       return national = salary * rates.rateMedio
+     }
+   }
+
+   // calcula el salario neto, restandole las deducciones a el salario inicial
+   salaryNeto() {
+     const {salary, reducer, irpf} = this;
+     let deductions = [irpf, this.studentLoan(), this.nationalInsurances()].reduce(reducer);
+     console.log(deductions)
+     return (
+      "Your gross income is ï¿½" +
+      salary.toString() +
+      " and your net income is ï¿½" +
+      (salary - deductions) +
+      ".")
+   }
+ }
+ 
+let salaryAll = new cal_tax_credit_salaryNeto(28000, "1150L", [1000, 580])
+console.log(salaryAll.studentLoan())
+console.log(salaryAll.nationalInsurances())
+console.log(salaryAll.salaryNeto())

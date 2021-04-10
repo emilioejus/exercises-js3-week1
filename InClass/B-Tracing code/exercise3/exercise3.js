@@ -1,24 +1,55 @@
+/** Version solo promesas */
 const getRepos = function(repoName) {
-  return fetch('https://api.github.com/users/' + repoName + '/repos')  
-    .then(data => data.json())
-    .then(function(response) {
-      return response.map(function(rep) {
-		console.log(rep.name);
-        return rep.name;
-      });
-    });
+    const API = `https://api.github.com/users/${repoName}/repos`;
+    return fetch(API,)  
+   //return fetch('https://api.github.com/users/' + repoName + '/repos')  
+
 };
 
-
-
-const migracodeRepos = getRepos('migracode-barcelona');
+let myElement = document.querySelector(".list-group-item");
+migracodeRepos =  getRepos('migracode-barcelona');
+migracodeRepos
+.then(resolve => resolve.json())
+.then(response => {
+  response.forEach(rep => {
+  let paragraph = document.createElement("p"); 
+  let paragrap = document.createElement("li");
+  paragraph.innerText = rep.name
+  paragrap.append(paragraph)
+  myElement.append(paragrap);
+  });
+  console.log('End!!!')
+});
 console.log("Loading...");
 
 
-var myElement = document.querySelector("#main");
-var paragraph = document.createElement("p"); 
-paragraph.innerText = migracodeRepos;
-myElement.appendChild(paragraph);
+/** Version async await */
+
+//const getRepos = async function(repoName) {
+//  const API = `https://api.github.com/users/${repoName}/repos`;
+//  try {
+//    const resolve = await fetch(API,);
+//    const data = await resolve.json();
+//    let names = data.map(rep => rep.name);
+//    var myElement = document.querySelector(".list-group-item");
+//    names.forEach(namee => {
+//      let paragraph = document.createElement("p"); 
+//      let paragrap = document.createElement("li");
+//      paragraph.innerText = namee;
+//      paragrap.append(paragraph)
+//      myElement.append(paragrap);
+//    })
+//  } catch (repoName) {
+//    onerror(repoName)
+//  }
+//  console.log('End!!')
+//
+//};
+//
+//migracodeRepos =  getRepos('migracode-barcelona');
+//console.log("Loading...");
+//
+//
 
 //Task1. Fix the code
 //Task2. Create a <p> for each repository
